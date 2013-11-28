@@ -154,6 +154,56 @@ def pagebreak():
         )
     )
 
+def table(cells, style=None):
+    '''Render a table with cells
+
+    @style: global table style
+    @cells: content in 2D array format. If the cell is plain text, using the
+            default cell style, else we assume the cell is hand-crafted wordml
+            element, we just append it to the row
+    '''
+    assert(len(cells) > 0)
+    assert(len(cells[0]) > 0)
+
+    tbl = E.tbl()
+    if isinstance(style, basestring):
+        tbl.append(
+            E.tblPr(
+                E.tblStyle(val=style)
+            )
+        )
+    elif style is not None:
+        tbl.append(style)
+    # TODO: support tblGrid
+
+    # iterate all rows
+    for row in cells:
+        tr = E.tr(
+            E.trPr(
+                E.cnfStyle(val='000000100000')
+            )
+        )
+        for cell in row:
+            if isinstance(cell, basestring):
+                cell = paragraph(None, run(cell))
+
+            if cell.tag == qname(cell.prefix, 'tc'):
+                tr.append(cell)
+            else:
+                tc = E.tc(
+                    E.tcPr(
+                        E.tcW(w='0', type='auto')
+                    ),
+                )
+                if cell.tag == qname(cell.prefix, 'p'):
+                    tc.append(cell)
+                elif cell.tag == qname(cell.prefix, 'r'):
+                    tc.append(paragraph(None, cell))
+                tr.append(tc)
+        tbl.append(tr)
+    return tbl
+
+
 class Document(object):
     '''Encapsulate the docx serialization.'''
     def __init__(self, doc):

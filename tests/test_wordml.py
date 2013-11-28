@@ -44,3 +44,15 @@ def test_spaces():
 def test_pagebreak():
     root = pagebreak()
     check_tag(root, ['p', 'r', 'br'])
+
+def test_table():
+    root = table([
+        ['2', '7', '6'],
+        ['9', '5', '1'],
+        ['4', '3', '9'],
+    ], 'LightShading-Accent1')
+    check_tag(root, split(r'\s+', '''tbl tblPr tblStyle
+    tr trPr cnfStyle tc tcPr tcW p r t tc tcPr tcW p r t tc tcPr tcW p r t
+    tr trPr cnfStyle tc tcPr tcW p r t tc tcPr tcW p r t tc tcPr tcW p r t
+    tr trPr cnfStyle tc tcPr tcW p r t tc tcPr tcW p r t tc tcPr tcW p r t
+    '''))
