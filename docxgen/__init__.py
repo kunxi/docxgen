@@ -146,6 +146,14 @@ def space(num=1):
     t.set("{http://www.w3.org/XML/1998/namespace}space", 'preserve')
     return run(t)
 
+def pagebreak():
+    '''Insert a hard pagebreak.'''
+    return paragraph(None,
+        run(
+            E.br(type='page')
+        )
+    )
+
 class Document(object):
     '''Encapsulate the docx serialization.'''
     def __init__(self, doc):

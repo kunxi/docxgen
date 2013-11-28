@@ -40,3 +40,7 @@ def test_spaces():
     check_tag(root, ['r', 't'])
     t = root[0]
     assert t.get("{http://www.w3.org/XML/1998/namespace}space") == 'preserve'
+
+def test_pagebreak():
+    root = pagebreak()
+    check_tag(root, ['p', 'r', 'br'])
