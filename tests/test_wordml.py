@@ -26,3 +26,11 @@ def test_list_item():
         yield check_tag, root, ['p', 'pPr', 'pStyle', 'numPr', 'ilvl', 'numId', 'r', 't']
         numId = root.find('.//w:numId', namespaces=nsmap)
         assert (numId.get(qname('w', 'val')) in '1234')
+
+def test_heading():
+    for _heading, style in zip((h1, h2, h3, title),
+            ('Heading1', 'Heading2', 'Heading3', 'Title')):
+        root = _heading(run('Heading'))
+        yield check_tag, root, ['p', 'pPr', 'pStyle', 'r', 't']
+        pstyle = root.find('.//w:pStyle', namespaces=nsmap)
+        assert pstyle.get(qname('w', 'val')) == style

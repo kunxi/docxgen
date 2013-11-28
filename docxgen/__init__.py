@@ -131,6 +131,15 @@ def li(style, *runs):
             )
         ), *runs)
 
+def heading(level, *runs):
+    return paragraph('Heading%d' % level, *runs)
+
+h1 = partial(heading, 1)
+h2 = partial(heading, 2)
+h3 = partial(heading, 3)
+title = partial(paragraph, 'Title')
+sub_title = partial(paragraph, 'Subtitle')
+
 class Document(object):
     '''Encapsulate the docx serialization.'''
     def __init__(self, doc):
