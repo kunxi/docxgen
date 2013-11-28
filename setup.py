@@ -9,6 +9,9 @@ setup(
     version=version,
     packages=find_packages(),
     install_requires=['lxml'],
+    include_package_data = True,
+    test_suite = 'nose.collector',
+    tests_require = ['nose', 'coverage'],
 
     description='A simple module to read and write Microsoft Office Word 2007 docx documents.',
     author='Kun Xi',
