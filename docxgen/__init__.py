@@ -53,7 +53,23 @@ def qname(namespace, name):
     assert(namespace in nsmap.values())
     return '{%s}%s' % (namespace, name)
 
-E = ElementMaker(namespace=nsmap['w'], nsmap=nsmap)
+typemap = {}
+def add_dict(elem, item):
+    attrib = elem.attrib
+    for k, v in item.items():
+        # add the namespace prefix to attribute key
+        if k.startswith('{'):
+            pass
+        elif elem.prefix:
+            k = '{%s}%s' % (elem.nsmap[elem.prefix], k)
+
+        if isinstance(v, basestring):
+            attrib[k] = v
+        else:
+            attrib[k] = typemap[type(v)](None, v)
+typemap[dict] = add_dict
+
+E = ElementMaker(namespace=nsmap['w'], nsmap=nsmap, typemap=typemap)
 
 def run(text='', style=None):
     '''the smallest build block.'''
@@ -93,6 +109,27 @@ def paragraph(style, *runs):
     para.extend(runs)
     return para
 
+def li(style, *runs):
+    '''
+    Render a list item with text runs.
+    @params style: string, enum of circle, square and number.
+    @params runs: a list of run element
+    '''
+    listmap = {
+        'circle': '1',
+        'number': '2',
+        'disc': '3',
+        'square': '4',
+    }
+    assert style in listmap
+    return paragraph(
+        E.pPr(
+            E.pStyle(val='ListParagraph'),
+            E.numPr(
+                E.ilvl(val='0'),
+                E.numId(val=listmap[style])
+            )
+        ), *runs)
 
 class Document(object):
     '''Encapsulate the docx serialization.'''

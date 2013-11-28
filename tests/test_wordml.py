@@ -19,3 +19,10 @@ def test_run():
 
 def test_paragraph():
     check_tag(paragraph(None, run('Example')), ['p', 'r', 't'])
+
+def test_list_item():
+    for style in ['circle', 'number', 'square', 'disc']:
+        root = li(style, run('item'))
+        yield check_tag, root, ['p', 'pPr', 'pStyle', 'numPr', 'ilvl', 'numId', 'r', 't']
+        numId = root.find('.//w:numId', namespaces=nsmap)
+        assert (numId.get(qname('w', 'val')) in '1234')
