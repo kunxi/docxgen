@@ -34,3 +34,9 @@ def test_heading():
         yield check_tag, root, ['p', 'pPr', 'pStyle', 'r', 't']
         pstyle = root.find('.//w:pStyle', namespaces=nsmap)
         assert pstyle.get(qname('w', 'val')) == style
+
+def test_spaces():
+    root = space(3)
+    check_tag(root, ['r', 't'])
+    t = root[0]
+    assert t.get("{http://www.w3.org/XML/1998/namespace}space") == 'preserve'

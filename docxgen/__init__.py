@@ -140,6 +140,12 @@ h3 = partial(heading, 3)
 title = partial(paragraph, 'Title')
 sub_title = partial(paragraph, 'Subtitle')
 
+def space(num=1):
+    '''Insert some spaces'''
+    t = E.t(' ' * num)
+    t.set("{http://www.w3.org/XML/1998/namespace}space", 'preserve')
+    return run(t)
+
 class Document(object):
     '''Encapsulate the docx serialization.'''
     def __init__(self, doc):
