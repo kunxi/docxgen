@@ -55,6 +55,44 @@ def qname(namespace, name):
 
 E = ElementMaker(namespace=nsmap['w'], nsmap=nsmap)
 
+def run(text='', style=None):
+    '''the smallest build block.'''
+    # CODE DEBT: the atomic block should be t, we will revise this if we want
+    # support wTabBefore and wTabAfter.
+    run = E.r()
+    if style is not None:
+        # bold and/or italic
+        if isinstance(style, etree._Element):
+            run.append(style)
+        else:
+            if isinstance(style, basestring):
+                style = [style]
+            run.append(E.rPr(*[E(x) for x in style]))
+
+    if isinstance(text, basestring):
+        text = E.t(text)
+    run.append(text)
+    return run
+
+def paragraph(style, *runs):
+    '''
+    Render a paragraph with specified style for text runs.
+    @params style: a string or pPr element
+    @params runs: a list of run element
+    '''
+    para = E.p()
+    if isinstance(style, basestring):
+        para.append(
+            E.pPr(
+                E.pStyle(val=style)
+            )
+        )
+    elif style is not None:
+        para.append(style)
+
+    para.extend(runs)
+    return para
+
 
 class Document(object):
     '''Encapsulate the docx serialization.'''
