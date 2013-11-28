@@ -2,7 +2,17 @@ import zipfile
 import sys
 
 from functools import partial
-from zipfile import ZipFile
+import sys
+if sys.version_info < (2, 7):
+    # add context manager to ZipFile
+    from contextlib import contextmanager
+    @contextmanager
+    def ZipFile(file, *args, **kwargs):
+        f = zipfile.ZipFile(file, *args, **kwargs)
+        yield f
+        f.close()
+else:
+    from zipfile import ZipFile
 from pkg_resources import resource_string
 from lxml import etree
 from lxml.builder import ElementMaker
