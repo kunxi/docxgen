@@ -206,8 +206,10 @@ def table(cells, style=None):
 
 class Document(object):
     '''Encapsulate the docx serialization.'''
-    def __init__(self, doc):
-        self.doc = doc
+    def __init__(self):
+        self.doc = E.document(
+            E.body()
+        )
         self.meta = {}
 
     @property
@@ -216,13 +218,6 @@ class Document(object):
 
     def update(self, *args, **kwargs):
         self.meta.update(*args, **kwargs)
-
-    @classmethod
-    def create(cls):
-        doc = E.document(
-            E.body()
-        )
-        return cls(doc)
 
     @classmethod
     def load(cls, file):
