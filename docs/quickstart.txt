@@ -1,0 +1,53 @@
+==========
+Quickstart
+==========
+
+.. module:: docxgen
+
+So you have some great thoughts in your mind, and you want to dump it in
+a Microsoft Word document? Here is an example how *Moby Dick* is crafted:
+
+1. create a docxgen.Document with meta data
+
+>>> from docxgen import *
+>>> doc = Document()
+>>> doc.update(title='Moby Dick; or, the Whale', creator='Herman Melville')
+
+2. In the document body, add title, heading, and paragraphs
+
+>>> body = doc.body
+>>> body.append(title(run('Moby Dick; or, the whale')))
+>>> body.append(h1(run('CHAPTER 1. Loomings.')))
+>>> body.append(paragraph(None, run('Call me Ishmael. Some years ago ...')))
+
+3. Save the document
+
+>>> doc.save('/tmp/moby-dick.docx')
+
+Theoratically, you can create a Microsoft Word document with a vanilla text
+editor and zip utitlity, the WordprocessingML_ is just another XML specification.
+docxgen provides a higher-level abastraction away from the bare-metal XML
+manipulation, but we highly recommend you understand the `key concepts`_.
+
+.. _WordprocessingML: http://msdn.microsoft.com/en-us/library/office/aa212812(v=office.11).aspx
+
+
+.. _key concepts:
+Key Concepts
+============
+
+The smallest build block in the WordprocessingML is a text element, `t`;
+then you can attach visual styles, like bold, color etc to construct a 
+text run, `run`. Many ext runs will be organized as `paragraph`. The
+paragraph may be stylized as *Heading1*, *Title*, various *ListParagraph*
+and such such.
+
+All the paragraphs are saved in a `body` element just like HTML, which is then
+saved in the top-level element `document`. During the serialization, the
+`document` is serialized as `word/document.xml`
+
+The docxgen leverages the power of lxml_ to manipulate the XML elements, please
+checkout the `lxml document`_ for the convention used in the docxgen.
+
+.. _lxml: http://lxml.de/
+.. _lxml document: http://lxml.de/index.html#documentation
