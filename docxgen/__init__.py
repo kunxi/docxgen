@@ -14,6 +14,7 @@ if sys.version_info < (2, 7):
 else:
     from zipfile import ZipFile
 from pkg_resources import resource_string
+from six import string_types
 from lxml import etree
 from lxml.builder import ElementMaker
 
@@ -63,7 +64,7 @@ def add_dict(elem, item):
         elif elem.prefix:
             k = '{%s}%s' % (elem.nsmap[elem.prefix], k)
 
-        if isinstance(v, basestring):
+        if isinstance(v, string_types):
             attrib[k] = v
         else:
             attrib[k] = typemap[type(v)](None, v)
@@ -81,11 +82,11 @@ def run(text='', style=None):
         if isinstance(style, etree._Element):
             run.append(style)
         else:
-            if isinstance(style, basestring):
+            if isinstance(style, string_types):
                 style = [style]
             run.append(E.rPr(*[E(x) for x in style]))
 
-    if isinstance(text, basestring):
+    if isinstance(text, string_types):
         text = E.t(text)
     run.append(text)
     return run
@@ -97,7 +98,7 @@ def paragraph(style, *runs):
     @params runs: a list of run element
     '''
     para = E.p()
-    if isinstance(style, basestring):
+    if isinstance(style, string_types):
         para.append(
             E.pPr(
                 E.pStyle(val=style)
@@ -166,7 +167,7 @@ def table(cells, style=None):
     assert(len(cells[0]) > 0)
 
     tbl = E.tbl()
-    if isinstance(style, basestring):
+    if isinstance(style, string_types):
         tbl.append(
             E.tblPr(
                 E.tblStyle(val=style)
@@ -184,7 +185,7 @@ def table(cells, style=None):
             )
         )
         for cell in row:
-            if isinstance(cell, basestring):
+            if isinstance(cell, string_types):
                 cell = paragraph(None, run(cell))
 
             if cell.tag == qname(cell.prefix, 'tc'):
@@ -205,9 +206,11 @@ def table(cells, style=None):
 
 
 class Document(object):
-    '''Encapsulate the docx serialization.'''
-    def __init__(self):
-        self.doc = E.document(
+    """
+    A Document instance contains all the parts of Microsoft Word document.
+    """
+    def __init__(self, doc=None):
+        self.doc = doc or E.document(
             E.body()
         )
         self.meta = {}
@@ -220,8 +223,8 @@ class Document(object):
         self.meta.update(*args, **kwargs)
 
     @classmethod
-    def load(cls, file):
-        with ZipFile(file) as zippy:
+    def load(cls, f):
+        with ZipFile(f) as zippy:
             root = etree.parse(zippy.open('word/document.xml'))
             return cls(root.getroot())
 
@@ -230,7 +233,7 @@ class Document(object):
         return etree.tostring(self.doc, pretty_print=pretty_print)
 
     def get_core_props(self):
-        _nsmap = dict((k, v) for k, v in nsmap.iteritems() if k in ('cp', 'dc', 'dcterms', 'dcmitype', 'xsi'))
+        _nsmap = dict((k, v) for k, v in nsmap.items() if k in ('cp', 'dc', 'dcterms', 'dcmitype', 'xsi'))
         core = etree.Element(qname('cp', 'coreProperties'), nsmap=_nsmap)
 
         if 'lastModifiedBy' in self.meta:
@@ -241,7 +244,7 @@ class Document(object):
         if 'keywords' in self.meta:
             key = 'keywords'
             el = etree.SubElement(core, qname('cp', key))
-            if isinstance(self.meta[key], basestring):
+            if isinstance(self.meta[key], string_types):
                 el.text = self.meta[key]
             else:
                 el.text = ','.join(self.meta[key])

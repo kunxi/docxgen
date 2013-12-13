@@ -6,13 +6,13 @@ from docxgen import *
 from docxgen import nsmap
 from . import check_tag
 
-def test_create():
-    doc = Document.create()
+def test_init():
+    doc = Document()
     check_tag(doc.doc, ['document', 'body'])
     check_tag(doc.body, ['body'])
 
 def test_save():
-    doc = Document.create()
+    doc = Document()
     tmp = BytesIO()
     doc.save(tmp)
 
@@ -32,7 +32,7 @@ def test_save():
 
 def test_load():
     # assume save works
-    d = Document.create()
+    d = Document()
     tmp = BytesIO()
     d.save(tmp)
 
@@ -41,11 +41,11 @@ def test_load():
     check_tag(doc.body, 'body'.split())
 
 def test_dumps():
-    doc = Document.create()
+    doc = Document()
     assert doc.dumps()
 
 def test_core_props():
-    doc = Document.create()
+    doc = Document()
     attrs = dict(lastModifiedBy='Joe Smith',
         keywords=['egg', 'spam'],
         title='Testing Doc',
