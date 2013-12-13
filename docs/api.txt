@@ -1,0 +1,70 @@
+.. _api:
+
+API Documentation
+=================
+
+.. module:: docxgen
+
+The module defines several functions and constants. For
+parts where docxgen depends on external libraries, we document the most
+important right here and provide links to the canonical documentation.
+
+
+E Object
+--------
+.. data:: E
+
+The :data:`E` object is an instance of the `lxml.ElementMaker`_
+with appropriate namespace mapping. It is quite easy to create
+a WordprocessingML element with the approach:
+
+>>> from xml.etree import ElementTree
+>>> from docxgen import E
+>>> t = E.t('I have a dream.')
+>>> ElementTree.tostring(t)
+'<ns0:t xmlns:ns0="http://schemas.openxmlformats.org/wordprocessingml/2006/main">I have a dream</ns0:t>'
+
+.. _lxml.ElementMaker: http://lxml.de/api/lxml.builder.ElementMaker-class.html
+
+
+Basic Usage
+-----------
+
+.. autofunction:: run
+
+.. autofunction:: paragraph
+
+.. autofunction:: li
+
+.. function:: title(runs)
+
+   Returns a paragraph with ``Title`` style for text runs.
+
+.. function:: subtitle(runs)
+
+   Returns a paragraph with ``Subtitle`` style for text runs.
+
+.. function:: h1(runs)
+
+   Returns a paragraph with ``Heading1`` style for text runs.
+
+.. function:: h2(runs)
+
+   Returns a paragraph with ``Heading2`` style for text runs.
+
+.. function:: h3(runs)
+
+   Returns a paragraph with ``Heading3`` style for text runs.
+
+.. autofunction:: spaces
+
+.. autofunction:: pagebreak
+
+.. autofunction:: table
+
+Document Object
+---------------
+
+.. autoclass:: Document
+   :members:
+   :inherited-members:

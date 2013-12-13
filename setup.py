@@ -9,13 +9,13 @@ setup(
     version=version,
     packages=find_packages(),
     install_requires=['lxml', 'six'],
-    include_package_data = True,
-    test_suite = 'nose.collector',
-    tests_require = ['nose', 'coverage'],
+    include_package_data=True,
+    test_suite='nose.collector',
+    tests_require=['nose', 'coverage'],
 
-    description='A simple module to read and write Microsoft Office Word 2007 docx documents.',
+    description='A library to generate Microsoft Office Word 2007 documents.',
     author='Kun Xi',
     author_email='kunxi@kunxi.org',
     url='http://github.com/kunxi/docxgen',
-    license = 'MIT',
+    license='MIT',
 )

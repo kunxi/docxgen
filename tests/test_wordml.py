@@ -9,6 +9,8 @@ def test_run():
             ('b', ['r', 'rPr', 'b', 't']),
             ('i', ['r', 'rPr', 'i', 't']),
             (['b', 'i'], ['r', 'rPr', 'b', 'i', 't']),
+            ('bu', ['r', 'rPr', 'b', 'u', 't']),
+            ('bi', ['r', 'rPr', 'b', 'i', 't']),
         ]:
         yield check_tag, run('sample text', style), expected
 
@@ -18,25 +20,25 @@ def test_run():
     yield check_tag, run('red text', colored), ['r', 'rPr', 'color', 't']
 
 def test_paragraph():
-    check_tag(paragraph(None, run('Example')), ['p', 'r', 't'])
+    check_tag(paragraph([run('Example')]), ['p', 'r', 't'])
 
 def test_list_item():
     for style in ['circle', 'number', 'square', 'disc']:
-        root = li(style, run('item'))
+        root = li([run('item')], style)
         yield check_tag, root, ['p', 'pPr', 'pStyle', 'numPr', 'ilvl', 'numId', 'r', 't']
         numId = root.find('.//w:numId', namespaces=nsmap)
         assert (numId.get(qname('w', 'val')) in '1234')
 
 def test_heading():
-    for _heading, style in zip((h1, h2, h3, title),
-            ('Heading1', 'Heading2', 'Heading3', 'Title')):
-        root = _heading(run('Heading'))
+    for _heading, style in zip((h1, h2, h3, title, subtitle),
+            ('Heading1', 'Heading2', 'Heading3', 'Title', 'Subtitle')):
+        root = _heading([run('Heading')])
         yield check_tag, root, ['p', 'pPr', 'pStyle', 'r', 't']
         pstyle = root.find('.//w:pStyle', namespaces=nsmap)
         assert pstyle.get(qname('w', 'val')) == style
 
 def test_spaces():
-    root = space(3)
+    root = spaces(3)
     check_tag(root, ['r', 't'])
     t = root[0]
     assert t.get("{http://www.w3.org/XML/1998/namespace}space") == 'preserve'
@@ -47,9 +49,9 @@ def test_pagebreak():
 
 def test_table():
     root = table([
-        ['2', '7', '6'],
-        ['9', '5', '1'],
-        ['4', '3', '9'],
+        [run('2'), run('7'), run('6')],
+        [run('9'), paragraph([run('5')]), run('1')],
+        [run('4'), run('3'), run('9')],
     ], 'LightShading-Accent1')
     check_tag(root, split(r'\s+', '''tbl tblPr tblStyle
     tr trPr cnfStyle tc tcPr tcW p r t tc tcPr tcW p r t tc tcPr tcW p r t

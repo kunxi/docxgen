@@ -1,33 +1,24 @@
 :orphan:
 
-=====================
-docxgen Documentation
-=====================
+=======
+docxgen
+=======
 
-Welcome to the docxgen |version| documentation. You can find the latest version
-`online <http://werkzeug.pocoo.org/documentation/>`_.
+A library to generate Microsoft Office Word 2007 documents.
 
-This work is sponsored by `SurveyMonkey`_.
+`Github <https://github.com/kunxi/docxgen>`_ | 
+`Issues <https://github.com/kunxi/docxgen/issues>`_ | 
+`PyPi <https://pypi.python.org/kunxi/docxgen>`_
+
+This work is proudly sponsored by `SurveyMonkey`_.
 
 .. _SurveyMonkey: https://www.surveymonkey.com
 
-Getting Started
----------------
 .. toctree::
    :maxdepth: 2
 
-   installation
    quickstart
-
-Reference
----------
-
-.. toctree::
-   :maxdepth: 2
-
-
-If you can’t find the information you’re looking for, have a look at the
-index or try to find it using the search function:
-
-*   :ref:`genindex`
-*   :ref:`search`
+   installation
+   development
+   news
+   api
