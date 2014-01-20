@@ -51,7 +51,7 @@ If you prefer to live on the edge, be my guest.
 
 
 
-.. _download page: http://werkzeug.pocoo.org/download
+.. _download page: https://github.com/kunxi/docxgen/releases/latest
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 .. _easy_install: http://peak.telecommunity.com/DevCenter/EasyInstall
 .. _Git: http://git-scm.org/
