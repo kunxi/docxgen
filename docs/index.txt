@@ -20,5 +20,5 @@ This work is proudly sponsored by `SurveyMonkey`_.
    quickstart
    installation
    development
-   news
+   changes
    api

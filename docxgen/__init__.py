@@ -1,6 +1,8 @@
 import zipfile
 import sys
 
+__version__ = '0.1.3'
+
 from functools import partial
 if sys.version_info < (2, 7):
     # add context manager to ZipFile
