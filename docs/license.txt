@@ -1,0 +1,19 @@
+License
+=======
+
+doxcgen is licensed under MIT license. The full license text can be found 
+below (:ref:`docxgen-license`).
+
+.. _authors:
+
+Authors
+-------
+
+.. include:: ../AUTHORS
+
+.. _docxgen-license:
+
+docxgen License
+---------------
+
+.. include:: ../LICENSE

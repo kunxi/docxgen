@@ -25,6 +25,7 @@ beautiful Word Document, as:
     doc.save('/tmp/moby-dick.docx')
 
 
-This work is proudly sponsored by `SurveyMonkey Inc`.
+This work is proudly sponsored by `SurveyMonkey Inc`, and licensed in MIT license.
 
 .. _SurveyMonkey Inc: https://www.surveymonkey.com
+.. _MIT license: http://opensource.org/licenses/MIT
