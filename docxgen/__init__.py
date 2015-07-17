@@ -81,7 +81,7 @@ typemap[dict] = add_dict
 E = ElementMaker(namespace=nsmap['w'], nsmap=nsmap, typemap=typemap)
 
 
-def run(text, style=None):
+def run(text='', style=None):
     """
     Returns a ``r`` (text run) element with the specified style for the text.
 
@@ -124,11 +124,11 @@ def run(text, style=None):
     return run
 
 
-def paragraph(runs, style=None):
+def paragraph(runs=None, style=None):
     """
     Returns a ``p`` (paragraph) element with specified style for text runs.
 
-    *runs* are a list of ``r`` (text run) element, see :func:`run`.
+    *runs* are list of ``r`` (text run) element or one `r` element, see :func:`run`.
 
     *style*, if specified, MUST be a ``pPr`` (paragraph property) element with
     nested ``pStyle`` (paragraph style) or a string for ``pStyle``. Commonly
@@ -145,7 +145,11 @@ def paragraph(runs, style=None):
                 E.pStyle(val=style)
             )
         )
-    para.extend(runs)
+    # PEP-3102 supports keyword-only arguments, this is a ugly workaround.
+    if isinstance(runs, list):
+        para.extend(runs)
+    elif runs:
+        para.append(runs)
     return para
 
 
