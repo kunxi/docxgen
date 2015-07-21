@@ -88,24 +88,30 @@ def run(text='', style=None):
     *text* is either a string or ``t`` (text) element or ``br`` (break)
     element.
 
-    *style*, if specified, MUST be a ``rPr`` (run property) element or the
-    combination of the following font styles:
+    *style*, if specified, MUST be a ``rPr`` (run property) element or a
+    list combination of the following font styles:
 
     .. _font-style-table:
 
     +-------+---------------------+
     | style | Font style rendered |
-    +=======+=====================+
-    | b     | bold                |
-    +-------+---------------------+
-    | i     | italic              |
-    +-------+---------------------+
-    | u     | underline           |
-    +-------+---------------------+
+    +=========+=====================+
+    | 'b'     | bold                |
+    +---------+---------------------+
+    | 'i'     | italic              |
+    +---------+---------------------+
+    | 'u'     | underline           |
+    +----------------+--------------------------------+
+    | 'color: value' | changes text color to hex value|
+    +----------------+--------------------------------+
+    | 'size: value'  | changes text size to value     |
+    +----------------+--------------------------------+
 
     For example::
 
-        run('bold and italic', 'bi')
+        run('bold and italic', ['b', 'i'])
+        run('this text is colored and bold', ['color: FF0000', 'b'])
+        run('this text is 24pt and underline', ['size: 24', 'u'])
 
     """
     # TODO: the atomic block should be t, we will revise this if we want
@@ -113,8 +119,24 @@ def run(text='', style=None):
     run = E.r()
     if hasattr(style, 'tag') and style.tag == qname('w', 'rPr'):
         run.append(style)
-    elif style is not None:
-        run.append(E.rPr(*map(E, style)))
+    elif style is not None and len(style) != 0:
+        runProperties = E.rPr()
+        for item in style:
+            if item == 'i':
+                runProperties.append(E('i'))
+            elif item == 'b':
+                runProperties.append(E('b'))
+            elif item == 'u':
+                runProperties.append(E.u(val="single"))
+            elif item.find('color') != -1:
+                color = E.color(val=item.split(':')[1])
+                runProperties.append(color)
+            elif item.find('size') != -1:
+                sizeLatin = E.sz(val=item.split(':')[1])
+                runProperties.append(sizeLatin)
+                sizeComplex = E.szCs(val=item.split(':')[1])
+                runProperties.append(sizeComplex)
+        run.append(runProperties)
 
     if hasattr(text, 'tag') and text.tag in (
             qname('w', 't'), qname('w', 'br')):
