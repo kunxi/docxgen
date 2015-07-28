@@ -50,7 +50,9 @@ nsmap = {
     'pr': 'http://schemas.openxmlformats.org/package/2006/relationships',
     # Dublin Core document properties
     'dcmitype': 'http://purl.org/dc/dcmitype/',
-    'dcterms':  'http://purl.org/dc/terms/'
+    'dcterms':  'http://purl.org/dc/terms/',
+    # test relationship
+    'relationship': 'http://schemas.openxmlformats.org/package/2006/relationships'
 }
 
 
@@ -79,6 +81,7 @@ def add_dict(elem, item):
 typemap[dict] = add_dict
 
 E = ElementMaker(namespace=nsmap['w'], nsmap=nsmap, typemap=typemap)
+H = ElementMaker(namespace=nsmap['relationship'], nsmap=nsmap, typemap=typemap)
 
 
 def run(text='', style=None):
@@ -102,16 +105,16 @@ def run(text='', style=None):
     +---------+---------------------+
     | 'u'     | underline           |
     +----------------+--------------------------------+
-    | 'color: value' | changes text color to hex value|
+    | 'color:value' | changes text color to hex value|
     +----------------+--------------------------------+
-    | 'size: value'  | changes text size to value     |
+    | 'size:value'  | changes text size to value     |
     +----------------+--------------------------------+
 
     For example::
 
         run('bold and italic', ['b', 'i'])
-        run('this text is colored and bold', ['color: FF0000', 'b'])
-        run('this text is 24pt and underline', ['size: 24', 'u'])
+        run('this text is colored and bold', ['color:FF0000', 'b'])
+        run('this text is 24pt and underline', ['size:48', 'u'])
 
     """
     # TODO: the atomic block should be t, we will revise this if we want
@@ -126,6 +129,8 @@ def run(text='', style=None):
                 runProperties.append(E('i'))
             elif item == 'b':
                 runProperties.append(E('b'))
+            elif item == 'h':
+                runProperties.append(E.rStyle(val='Hyperlink'))
             elif item == 'u':
                 runProperties.append(E.u(val="single"))
             elif item.find('color') != -1:
@@ -291,6 +296,7 @@ class Document(object):
             E.body()
         )
         self.meta = {}
+        self.rels = []  # urls for hyperlinks
 
     @property
     def body(self):
@@ -368,13 +374,31 @@ class Document(object):
                  'word/stylesWithEffects.xml',
                  'word/webSettings.xml',
                  'word/theme/theme1.xml',
-                 'word/_rels/document.xml.rels',
                  )
         with ZipFile(fp, mode='w', compression=zipfile.ZIP_DEFLATED) as zippy:
             for part in parts:
                 bytes = resource_string(__name__, 'templates/%s' % part)
                 # CODE DEBT: use stream?
                 zippy.writestr(part, bytes)
+
+            # add hyperlinks to the relationship document.xml.rels
+            bytes = resource_string(__name__, 'templates/word/_rels/document.xml.rels')
+            root = etree.fromstring(bytes)
+            currentId = len(list(root))
+            for rel in self.rels:
+                currentId += 1
+                node = H.Relationship()
+                node.set('Id', 'rId' + str(currentId))
+                node.set('Target', rel)
+                node.set('TargetMode', 'External')
+                node.set('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/'
+                    'relationships/hyperlink')
+                root.append(node)
+
+            string = etree.tostring(root, xml_declaration=True, standalone=True,
+                encoding='UTF-8', pretty_print=pretty_print)
+            # serialize the document.xml.rels
+            zippy.writestr('word/_rels/document.xml.rels', string)
 
             # serialize the document.xml
             zippy.writestr('word/document.xml', etree.tostring(
